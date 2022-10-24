@@ -59,6 +59,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1710733486612788616, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5053002141456898995, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -67,9 +71,45 @@ PrefabInstance:
       propertyPath: m_GravityScale
       value: 0.06
       objectReference: {fileID: 0}
+    - target: {fileID: 5785577634826974635, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6169550004686840166, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
       propertyPath: m_Name
       value: Prey
+      objectReference: {fileID: 0}
+    - target: {fileID: 6169550004686840166, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6294512647454850294, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6357495395411151029, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7004162684439842748, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7101026365168214461, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7864619326739507788, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8302731620922395791, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8340069418803078513, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
@@ -90,4 +130,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4ad36240eeb5c244a4c930f9255cf5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeToSplit: 5

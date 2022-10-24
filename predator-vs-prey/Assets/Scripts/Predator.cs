@@ -18,7 +18,7 @@ public class Predator : MonoBehaviour
     }
     void Start()
     {
-
+        Physics2D.queriesStartInColliders = false;
     }
 
     void Update()
