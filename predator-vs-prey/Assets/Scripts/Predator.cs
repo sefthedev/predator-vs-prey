@@ -9,7 +9,9 @@ public class Predator : MonoBehaviour
     [SerializeField] static float maxEnergy = 15f;
     [SerializeField] static float energyConsumption = 1f;
     float energy = maxEnergy;
-    
+    int rayCastNumber = 0;
+    public float[] inputs = new float[25];
+
     PopulationManager populationManager;
 
     private void Awake()
@@ -18,7 +20,6 @@ public class Predator : MonoBehaviour
     }
     void Start()
     {
-        Physics2D.queriesStartInColliders = false;
     }
 
     void Update()
@@ -29,7 +30,14 @@ public class Predator : MonoBehaviour
             populationManager.RemoveFromPredatorPopulation(gameObject);
             Destroy(gameObject);
         }
+        RaycastHit2D hitInput1 = Physics2D.Raycast(this.transform.position, Quaternion.AngleAxis((rayCastNumber - 12) * 1.6f, transform.forward) * transform.right, 10f);
+        inputs[rayCastNumber] = hitInput1.collider?.tag == "Prey" ?  hitInput1.distance  : 10 ;
+        if (rayCastNumber == 24)
+            rayCastNumber = 0;
+        else
+            rayCastNumber++;
         
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

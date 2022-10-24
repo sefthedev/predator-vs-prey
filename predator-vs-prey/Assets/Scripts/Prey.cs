@@ -11,6 +11,9 @@ public class Prey : MonoBehaviour
     float energy = maxEnergy;
     PopulationManager populationManager;
     Vector3 pos;
+    int rayCastNumber = 0;
+    public float[] inputs = new float[25];
+
     private void Awake()
     {
         populationManager = GameObject.Find("PopulationManager").GetComponent<PopulationManager>();
@@ -54,6 +57,13 @@ public class Prey : MonoBehaviour
 
             }
         }
+        RaycastHit2D hitInput1 = Physics2D.Raycast(this.transform.position, Quaternion.AngleAxis((rayCastNumber - 12) * 13f, transform.forward) * transform.right, 6f);
+        inputs[rayCastNumber] = hitInput1.collider?.tag == "Predator" ? hitInput1.distance : 10;
+        if (rayCastNumber == 24)
+            rayCastNumber = 0;
+        else
+            rayCastNumber++;
+
     }
 
 }

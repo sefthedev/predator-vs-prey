@@ -85,7 +85,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6294512647454850294, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6357495395411151029, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
       propertyPath: m_Layer
@@ -98,6 +98,10 @@ PrefabInstance:
     - target: {fileID: 7101026365168214461, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
       propertyPath: m_Layer
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7101026365168214461, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
+      propertyPath: m_TagString
+      value: Prey
       objectReference: {fileID: 0}
     - target: {fileID: 7864619326739507788, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
       propertyPath: m_Layer

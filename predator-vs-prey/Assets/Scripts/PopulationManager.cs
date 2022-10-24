@@ -15,6 +15,8 @@ public class PopulationManager : MonoBehaviour
 
     void Start()
     {
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 150;
         for (int i = 0; i < predatorPopulationMaxSize; i++)
         {
             Vector3 pos = new Vector3(Random.Range(-38, 38), Random.Range(-23, 23), 0);
