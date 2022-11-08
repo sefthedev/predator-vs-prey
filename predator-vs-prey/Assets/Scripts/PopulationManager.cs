@@ -1,3 +1,4 @@
+using NEAT;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +13,10 @@ public class PopulationManager : MonoBehaviour
     List<GameObject> preyPopulation = new List<GameObject>();
 
 
+    System.Random random = new System.Random();
+    public InnovationGen nodeInnov = new InnovationGen();
+    public InnovationGen connInnov = new InnovationGen();
+
 
     void Start()
     {
@@ -22,6 +27,17 @@ public class PopulationManager : MonoBehaviour
             Vector3 pos = new Vector3(Random.Range(-38, 38), Random.Range(-23, 23), 0);
             Quaternion rot = Quaternion.Euler(0, 0, Random.Range(0, 365));
             GameObject go = Instantiate(predatorPrefab, pos, rot);
+            go.GetComponent<Predator>().Genome = new NEAT.Genome();
+            for (int j = 0; j < go.GetComponent<Predator>().inputs.Length; j++)
+            {
+                go.GetComponent<Predator>().AddNodeGene(new NodeGenes(NodeGenes.TYPE.INPUT, nodeInnov.GetInnovation()));
+            }
+
+            go.GetComponent<Predator>().AddNodeGene(new NodeGenes(NodeGenes.TYPE.OUTPUT, nodeInnov.GetInnovation()));
+            go.GetComponent<Predator>().AddNodeGene(new NodeGenes(NodeGenes.TYPE.OUTPUT, nodeInnov.GetInnovation()));
+            go.GetComponent<Predator>().ConnectionMutation(random, connInnov);
+
+
             predatorPopulation.Add(go);
         }
         for (int i = 0; i < preyPopulationMaxSize; i++)
@@ -29,6 +45,17 @@ public class PopulationManager : MonoBehaviour
             Vector3 pos = new Vector3(Random.Range(-38, 38), Random.Range(-23, 23), 0);
             Quaternion rot = Quaternion.Euler(0, 0, Random.Range(0, 365));
             GameObject go = Instantiate(preyPrefab, pos, rot);
+            go.GetComponent<Prey>().Genome = new NEAT.Genome();
+            Debug.Log(go.GetComponent<Prey>().Genome);
+            for (int j = 0; j < go.GetComponent<Prey>().inputs.Length; j++)
+            {
+                go.GetComponent<Prey>().AddNodeGene(new NodeGenes(NodeGenes.TYPE.INPUT, nodeInnov.GetInnovation()));
+            }
+
+            go.GetComponent<Prey>().AddNodeGene(new NodeGenes(NodeGenes.TYPE.OUTPUT, nodeInnov.GetInnovation()));
+            go.GetComponent<Prey>().AddNodeGene(new NodeGenes(NodeGenes.TYPE.OUTPUT, nodeInnov.GetInnovation()));
+            go.GetComponent<Prey>().ConnectionMutation(random, connInnov);
+
             preyPopulation.Add(go);
         }
     }
@@ -51,7 +78,6 @@ public class PopulationManager : MonoBehaviour
     }
     void Update()
     {
-
     }
 
     public int PreyPopulation 
