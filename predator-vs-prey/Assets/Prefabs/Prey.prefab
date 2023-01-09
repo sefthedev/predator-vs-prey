@@ -69,7 +69,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 1f3a3c54fac6f2f4c9fd3c94f468e404, type: 2}
     - target: {fileID: 5535105615349662283, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
       propertyPath: m_GravityScale
-      value: 0.06
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5785577634826974635, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
       propertyPath: m_Layer
@@ -134,3 +134,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4ad36240eeb5c244a4c930f9255cf5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputs:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  outputs:
+  - 0
+  - 0

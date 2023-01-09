@@ -72,8 +72,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 9c7513441020820418279b86957b566b, type: 2}
     - target: {fileID: 5535105615349662283, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
+      propertyPath: m_AngularDrag
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5535105615349662283, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
       propertyPath: m_GravityScale
-      value: 0.03
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5785577634826974635, guid: f4641a41df1ae0b47ae6a0b644ea5524, type: 3}
       propertyPath: m_Layer
@@ -163,5 +167,8 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  - 0
+  - 0
+  outputs:
   - 0
   - 0

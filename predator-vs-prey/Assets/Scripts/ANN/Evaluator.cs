@@ -36,9 +36,5 @@ namespace NEAT
 
     }
 
-    class Species
-    {
-        public Genome mascot;
 
-    }
 }

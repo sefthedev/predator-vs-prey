@@ -15,7 +15,8 @@ namespace NEAT
 
         int inputsNum = 0;
         int outputsNum = 0;
-        public Specie GenSpecie;
+
+        public Specie GenSpecie { get; set; }
         private double compute_at(NodeGenes a)
         {
             if (a.value != null) return (double)a.value;
@@ -43,7 +44,7 @@ namespace NEAT
                 if (a.type == NodeGenes.TYPE.OUTPUT)
                 {
                     _outputs[outputIterator] = compute_at(a);
-                    UnityEngine.Debug.Log(_outputs[outputIterator]);
+                    //UnityEngine.Debug.Log(_outputs[outputIterator]);
                     outputIterator++;
                 }
             }
@@ -171,6 +172,25 @@ namespace NEAT
                 }
 
             }
+        }
+
+        public static Genome copyGenome(Genome a) {
+
+            Genome child = new Genome();
+
+             foreach (KeyValuePair<int, NodeGenes> aNode in a.nodes)
+                child.AddNodeGene(aNode.Value.Copy());
+
+
+            foreach (KeyValuePair<int, ConnectionGenes> aConnection in a.connections)
+            {
+
+                ConnectionGenes childConnectionGene = aConnection.Value.Copy();
+                child.AddConnectionGene(childConnectionGene);
+            }
+
+            return child;
+
         }
         public static Genome Cross(Genome a, Genome b, Random r)
         {
@@ -385,8 +405,22 @@ namespace NEAT
             return (x >= y) ? (x * x + x + y) : (y * y + x);
         }
     }
+    public class Specie
+    {
+        public Genome mascot;
+        public List<UnityEngine.GameObject> gos = new List<UnityEngine.GameObject>();
+        public float bestScore = 0f;
 
+        public void setMascot(Genome _mascot) 
+        {
+            mascot = Genome.copyGenome(_mascot);
 
-
-
+        }
+        public void addGO(UnityEngine.GameObject go) {
+            gos.Add(go);
+        }
+        public void removeGO(UnityEngine.GameObject go) {
+            gos.Remove(go);
+        }
+    }
 }

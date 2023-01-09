@@ -20,7 +20,7 @@ namespace NEAT
         const double C1 = 1.0;
         const double C2 = 1.0;
         const double C3 = 0.4;
-        double DT = 0.3;
+        //double DT = 0.3;
         double MUTATION_RATE = 0.7;
         double ADD_CONN_RATE = 0.4;
         double ADD_NODE_RATE = 0.3;
@@ -46,7 +46,7 @@ namespace NEAT
                 agents.Add(new Genome());
                 agents[i] = Genome.Cross(agents[0], agents[0], random);
             }
-            species.Add(new Specie(agents[0]));
+            //species.Add(new Specie(agents[0]));
             foreach (Genome aGenome in agents)
             {
                 aGenome.ConnectionMutation(random, connInnov);
@@ -88,44 +88,31 @@ namespace NEAT
         }
         void SeclectSpecies()
         {
-            species.Clear();
-            species.Add(new Specie(agents[0]));
-            agents[0].GenSpecie = species[0];
+            //species.Clear();
+            //species.Add(new Specie(agents[0]));
+            //agents[0].GenSpecie = species[0];
 
-            for (int i = 1; i < population; i++)
-            {
-                bool CreateNew = true;
-                for (int s = 0; s < species.Count; s++)
-                {
-                    double dist = Genome.CompatibilityDistance(species[s].mascot, agents[s], C1, C2, C3);
-                    if (dist < DT)
-                    {
-                        agents[i].GenSpecie = species[s];
-                        species[s].size++;
-                        CreateNew = false;
-                    }
-                    species[s].number = (byte)s;
-                }
-                if (CreateNew)
-                {
-                    species.Add(new Specie(agents[i]));
-                    //agents[i].GenSpecie = species[species.Count - 1];
-                }
-            }
+            //for (int i = 1; i < population; i++)
+            //{
+            //    bool CreateNew = true;
+            //    for (int s = 0; s < species.Count; s++)
+            //    {
+            //        double dist = Genome.CompatibilityDistance(species[s].mascot, agents[s], C1, C2, C3);
+            //        if (dist < DT)
+            //        {
+            //            agents[i].GenSpecie = species[s];
+            //            species[s].size++;
+            //            CreateNew = false;
+            //        }
+            //        //species[s].number = (byte)s;
+            //    }
+            //    if (CreateNew)
+            //    {
+            //        species.Add(new Specie(agents[i]));
+            //        //agents[i].GenSpecie = species[species.Count - 1];
+            //    }
+            //}
         }
     }
 
-    public class Specie
-    {
-        public Genome mascot;
-        public int size = 0;
-        public byte number = 0;
-        public Specie(Genome _mascot)
-        {
-            mascot = _mascot;
-            size++;
-            _mascot.GenSpecie = this;
-        }
-
-    }
 }
