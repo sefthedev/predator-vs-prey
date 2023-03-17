@@ -409,7 +409,8 @@ namespace NEAT
     public class Specie
     {
         public Genome mascot;
-        public List<UnityEngine.GameObject> gos = new List<UnityEngine.GameObject>();
+        //public List<UnityEngine.GameObject> gos = new List<UnityEngine.GameObject>();
+        public int memberCount = 0;
         public float bestScore = 0f;
 
         public void setMascot(Genome _mascot) 
@@ -417,13 +418,13 @@ namespace NEAT
             mascot = Genome.copyGenome(_mascot);
 
         }
-        public void addGO(UnityEngine.GameObject go)
+        public void addMember()
         {
-            gos.Add(go);
+            memberCount++;
         }
-        public void removeGO(UnityEngine.GameObject go)
+        public void removeMember()
         {
-            gos.Remove(go);
+            memberCount--;
         }
     }
 }

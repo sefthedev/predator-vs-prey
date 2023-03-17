@@ -10,16 +10,14 @@ public class PopulationManager : MonoBehaviour
 {
     
     //SETTINGS
-    public float xBorder = 40;
-    public float yBorder = 40;
+
     System.Random random = new System.Random();
     
     //PREFABS
     [SerializeField] GameObject predatorPrefab;
     [SerializeField] GameObject preyPrefab;
     //STATS
-    [SerializeField] int predatorPopulationMaxSize = 180;
-    [SerializeField] int preyPopulationMaxSize = 800;
+
     private int predatorNodeCount = 0;
     private int predatorConnectionCount = 0;
     private int predatorGenCount = 0;
@@ -27,15 +25,14 @@ public class PopulationManager : MonoBehaviour
     private int preyConnectionCount = 0;
     private int preyGenCount = 0;
     private float passedTime = 0.0f;
-
+    public int predatorSpecies = 0;
+    public int preySpecies = 0;
 
     //POPULATION
     List<GameObject> predatorPopulation = new List<GameObject>();
     List<GameObject> preyPopulation = new List<GameObject>();
 
-    //SPECIES
-    public int predatorSpecies = 0;
-    public int preySpecies = 0;
+
     //INNOVATION
     public InnovationGen predatorNodeInnov = new InnovationGen ();
     public InnovationGen predatorConnInnov = new InnovationGen();
@@ -57,18 +54,18 @@ public class PopulationManager : MonoBehaviour
     {
         // SETTINGS
         Application.runInBackground = true;
-        for (int i = 0; i < predatorPopulationMaxSize; i++)
+        for (int i = 0; i < SimulationRules.predatorPopulationMaxSize; i++)
         {
-            Vector3 pos = new Vector3(Random.Range(-xBorder, xBorder), Random.Range(-yBorder, yBorder), 0);
+            Vector3 pos = new Vector3(Random.Range(-SimulationRules.xBorder, SimulationRules.xBorder), Random.Range(-SimulationRules.yBorder, SimulationRules.yBorder), 0);
             Quaternion rot = Quaternion.Euler(0, 0, Random.Range(0, 365));
             GameObject go = Instantiate(predatorPrefab, pos, rot);
             go.GetComponent<Predator>().NeatSetup();
             this.UpdateAgentPopulation(go, true, AGENTTYPE.PREDATOR);
         }
 
-        for (int i = 0; i < preyPopulationMaxSize; i++)
+        for (int i = 0; i < SimulationRules.preyPopulationMaxSize; i++)
         {
-            Vector3 pos = new Vector3(Random.Range(-xBorder, xBorder), Random.Range(-yBorder, yBorder), 0);
+            Vector3 pos = new Vector3(Random.Range(-SimulationRules.xBorder, SimulationRules.xBorder), Random.Range(-SimulationRules.yBorder, SimulationRules.yBorder), 0);
             Quaternion rot = Quaternion.Euler(0, 0, Random.Range(0, 365));
             GameObject go = Instantiate(preyPrefab, pos, rot);
             go.GetComponent<Prey>().NeatSetup();
@@ -106,10 +103,10 @@ public class PopulationManager : MonoBehaviour
         if (agentType == AGENTTYPE.PREDATOR && !addAgent)
         {
             predatorPopulation.Remove(go);
-            if (go.GetComponent<Predator>().Specie.bestScore < (go.GetComponent<Predator>().children * 0.1f + go.GetComponent<Predator>().timesFollowedPrey * 0.5f + go.GetComponent<Predator>().timeSurvived * 0.1f))
+            if (go.GetComponent<Predator>().Genome.Specie.bestScore < (go.GetComponent<Predator>().children * 0.1f + go.GetComponent<Predator>().timesFollowedPrey * 0.5f + go.GetComponent<Predator>().timeSurvived * 0.1f))
             {
-                go.GetComponent<Predator>().Specie.bestScore = go.GetComponent<Predator>().children * 0.5f + go.GetComponent<Predator>().timeSurvived * 0.1f;
-                go.GetComponent<Predator>().Specie.setMascot(Genome.copyGenome(go.GetComponent<Predator>().Genome));
+                go.GetComponent<Predator>().Genome.Specie.bestScore = go.GetComponent<Predator>().children * 0.5f + go.GetComponent<Predator>().timeSurvived * 0.1f;
+                go.GetComponent<Predator>().Genome.Specie.setMascot(Genome.copyGenome(go.GetComponent<Predator>().Genome));
             }
             predatorConnectionCount -= go.GetComponent<Predator>().Genome.connections.Count;
             predatorNodeCount -= go.GetComponent<Predator>().Genome.nodes.Count;
@@ -129,10 +126,10 @@ public class PopulationManager : MonoBehaviour
 
         if (agentType == AGENTTYPE.PREY && !addAgent)
         {
-            if (go.GetComponent<Prey>().Specie.bestScore < (go.GetComponent<Prey>().timesEscaped * 0.5f + go.GetComponent<Prey>().timeSurvived * 0.1f))
+            if (go.GetComponent<Prey>().Genome.Specie.bestScore < (go.GetComponent<Prey>().timesEscaped * 0.5f + go.GetComponent<Prey>().timeSurvived * 0.1f))
             {
-                go.GetComponent<Prey>().Specie.bestScore = go.GetComponent<Prey>().timesEscaped * 0.5f + go.GetComponent<Prey>().timeSurvived * 0.1f;
-                go.GetComponent<Prey>().Specie.setMascot(Genome.copyGenome(go.GetComponent<Prey>().Genome));
+                go.GetComponent<Prey>().Genome.Specie.bestScore = go.GetComponent<Prey>().timesEscaped * 0.5f + go.GetComponent<Prey>().timeSurvived * 0.1f;
+                go.GetComponent<Prey>().Genome.Specie.setMascot(Genome.copyGenome(go.GetComponent<Prey>().Genome));
             }
             preyConnectionCount -= go.GetComponent<Prey>().Genome.connections.Count;
             preyNodeCount -= go.GetComponent<Prey>().Genome.nodes.Count;
@@ -152,7 +149,7 @@ public class PopulationManager : MonoBehaviour
             "||||||||||||   average Pred/Prey nodeCount:     " + System.Math.Round((float)predatorNodeCount / predatorPopulation.Count)+ "/" + System.Math.Round((float)preyNodeCount / preyPopulation.Count) +
             "||||||||||||   average Pred/Prey Generation:     " + System.Math.Round((float)predatorGenCount/predatorPopulation.Count) + "/" + System.Math.Round((float)preyGenCount/preyPopulation.Count)+
             "||||||||||||   predatorPopulation:     " + this.predatorPopulation.Count + "||||||||||||   preyPopulation:     " + this.preyPopulation.Count +
-            "||||||||||||   predatorSpeciesCount:     " + this.predatorSpecies + "||||||||||||   preySpeciesCount:     " + this.preySpecies + "record"+this.preyPopulation[0].GetComponent<Prey>().Specie.bestScore+ this.predatorPopulation[0].GetComponent<Predator>().Specie.bestScore);
+            "||||||||||||   predatorSpeciesCount:     " + this.predatorSpecies + "||||||||||||   preySpeciesCount:     " + this.preySpecies + "record"+this.preyPopulation[0].GetComponent<Prey>().Genome.Specie.bestScore+ this.predatorPopulation[0].GetComponent<Predator>().Genome.Specie.bestScore);
     }
 
     private void WriteStats()
@@ -168,7 +165,7 @@ public class PopulationManager : MonoBehaviour
         }
 
         passedTime = (float)System.Math.Round(passedTime + 0.05f, 2);
-       
+
     }
 
     public int PreyPopulation
@@ -176,20 +173,13 @@ public class PopulationManager : MonoBehaviour
         get { return preyPopulation.Count; }
     }
 
-    public int PreyPopulationMaxSize
-    {
-        get { return preyPopulationMaxSize; }
-    }
 
     public int PredatorPopulation
     {
         get { return predatorPopulation.Count; }
     }
 
-    public int preadatorPopulationMaxSize
-    {
-        get { return predatorPopulationMaxSize; }
-    }
+
 
 }
 

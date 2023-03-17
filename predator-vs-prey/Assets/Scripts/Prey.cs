@@ -11,7 +11,7 @@ public class Prey : Agent
     PopulationManager populationManager;
 
     // GAMERULE 
-    float timeToSplit = 7f;
+
 
     // STATS
     float distanceTraveled = 0f;
@@ -35,8 +35,6 @@ public class Prey : Agent
     private void Awake()
     {
         populationManager = GameObject.Find("PopulationManager").GetComponent<PopulationManager>();
-        xBorder = populationManager.xBorder;
-        yBorder = populationManager.yBorder;
     }
 
     void Start()
@@ -57,9 +55,9 @@ public class Prey : Agent
         timeSurvived += Time.deltaTime;
         if (transform.position == pos)
         {
-            if (energy < maxEnergy)
+            if (energy < SimulationRules.maxEnergy)
             {
-                energy = Mathf.Clamp(energy + Time.deltaTime, 0f, maxEnergy);
+                energy = Mathf.Clamp(energy + Time.deltaTime, 0f, SimulationRules.maxEnergy);
             }
         }
         else
@@ -67,15 +65,15 @@ public class Prey : Agent
             distanceTraveled += Vector3.Distance(pos, transform.position);
             pos = transform.position;
         }
-        if (exhausted && energy > (maxEnergy / 2f))
+        if (exhausted && energy > (SimulationRules.maxEnergy / 2f))
         {
             exhausted = false;
         }
         splitTime += Time.deltaTime;
-        if (splitTime > timeToSplit)
+        if (splitTime > SimulationRules.timeToSplit)
         {
             splitTime = 0f;
-            if (populationManager.PreyPopulation < populationManager.PreyPopulationMaxSize)
+            if (populationManager.PreyPopulation < SimulationRules.preyPopulationMaxSize)
             {
                 this.CreateChild();
             }
@@ -158,14 +156,14 @@ public class Prey : Agent
     {
         // SCREN WRAPPING
         Vector3 newPosition = transform.position;
-        if (newPosition.x > xBorder || newPosition.x < -xBorder)
+        if (newPosition.x > SimulationRules.xBorder || newPosition.x < -SimulationRules.xBorder)
         {
-            newPosition.x = newPosition.x > xBorder ? -xBorder : xBorder;
+            newPosition.x = newPosition.x > SimulationRules.xBorder ? -SimulationRules.xBorder : SimulationRules.xBorder;
         }
 
-        if (newPosition.y > yBorder || newPosition.y < -yBorder)
+        if (newPosition.y > SimulationRules.yBorder || newPosition.y < -SimulationRules.yBorder)
         {
-            newPosition.y = newPosition.y > yBorder ? -yBorder : yBorder;
+            newPosition.y = newPosition.y > SimulationRules.yBorder ? -SimulationRules.yBorder : SimulationRules.yBorder;
         }
         transform.position = newPosition;
     }
@@ -188,14 +186,14 @@ public class Prey : Agent
         //GENOME
         //go.GetComponent<Prey>().Genome = NEAT.Genome.copyGenome(this.Genome);
 
-        go.GetComponent<Prey>().Genome = Genome.Cross(this.Genome, this.Specie.mascot, random);
+        go.GetComponent<Prey>().Genome = Genome.Cross(this.Genome, this.Genome.Specie.mascot, random);
         if (random.NextDouble() < MUTATION_RATE) go.GetComponent<Prey>().Genome.Mutation(random);
         if (random.NextDouble() < ADD_CONN_RATE) go.GetComponent<Prey>().Genome.ConnectionMutation(random, populationManager.preyConnInnov);
         if (random.NextDouble() < ADD_NODE_RATE) go.GetComponent<Prey>().Genome.NodeMutation(random, populationManager.preyNodeInnov, populationManager.preyConnInnov);
         //if (random.NextDouble() < (1 - 1f / ((100f / ((float)(this.generation + 1)) / 50f)))+MUTATION_RATE) go.GetComponent<Prey>().Genome.Mutation(random);
         //if (random.NextDouble() < (1 - 1f / ((100f / ((float)(this.generation + 1)) / 30f))) + ADD_CONN_RATE) go.GetComponent<Prey>().Genome.ConnectionMutation(random, populationManager.connInnov);
         //if (random.NextDouble() < (1 - 1f / ((100f /((float)(this.generation + 1)) / 20f)))+ ADD_NODE_RATE) go.GetComponent<Prey>().Genome.NodeMutation(random, populationManager.nodeInnov, populationManager.connInnov
-        go.GetComponent<Prey>().selectSpecie(this.Specie);
+        go.GetComponent<Prey>().selectSpecie(this.Genome.Specie);
         populationManager.UpdateAgentPopulation(go, true, AGENTTYPE.PREY);
     }
 
@@ -227,8 +225,8 @@ public class Prey : Agent
         double dist = Genome.CompatibilityDistance(Genome, sp.mascot, C1, C2, C3);
         if (dist < DT)
         {
-            this.Specie = sp;
-            this.Specie.addGO(gameObject);
+            this.Genome.Specie = sp;
+            this.Genome.Specie.addMember();
             CreateNew = false;
         }
 
@@ -240,17 +238,17 @@ public class Prey : Agent
 
     protected override void createNewSpecie()
     {
-        this.Specie = new Specie();
-        this.Specie.setMascot(this.Genome);
+        this.Genome.Specie = new Specie();
+        this.Genome.Specie.setMascot(this.Genome);
         populationManager.preySpecies++;
-        this.Specie.addGO(gameObject);
+        this.Genome.Specie.addMember();
     }
 
     public override void removeSpecie()
     {
         
-        this.Specie.removeGO(gameObject);
-        if (this.Specie.gos.Count == 0)
+        this.Genome.Specie.removeMember();
+        if (this.Genome.Specie.memberCount == 0)
             populationManager.preySpecies--;
     }
 
