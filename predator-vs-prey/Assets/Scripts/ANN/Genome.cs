@@ -8,6 +8,7 @@ namespace NEAT
 {
     public class Genome : IComparable<Genome>
     {
+        public Specie Specie { get; set; } 
         const double PROBABILITY_PERTURBING = 0.9;
         public double score;
         public Dictionary<int, ConnectionGenes> connections { get; set; }
@@ -416,10 +417,12 @@ namespace NEAT
             mascot = Genome.copyGenome(_mascot);
 
         }
-        public void addGO(UnityEngine.GameObject go) {
+        public void addGO(UnityEngine.GameObject go)
+        {
             gos.Add(go);
         }
-        public void removeGO(UnityEngine.GameObject go) {
+        public void removeGO(UnityEngine.GameObject go)
+        {
             gos.Remove(go);
         }
     }

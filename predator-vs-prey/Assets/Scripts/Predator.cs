@@ -3,50 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using NEAT;
 
-public class Predator : MonoBehaviour
+public class Predator : Agent
 {
 
     //SETTINGS
-    float xBorder = 40;
-    float yBorder = 40;
-    System.Random random = new System.Random();
+    
     PopulationManager populationManager;
 
     // GAMERULE 
-    public int preyEaten = 0;
+    int preyEaten = 0;
     int eatenPreyToSplit = 4;
-    public bool eaten = false;
-    public float eatenCd = 0.25f;
-    static float maxEnergy = 15f;
-    static float energyConsumption = 1f;
-    public float energy = maxEnergy;
+    bool eaten = false;
+    float eatenCd = 0.25f;
+
 
     // STATS
-    public int generation = 0;
     public int children = 0;
-    public float timeSurvived = 0f;
-    public int timesFollowed = 0;
-    public double currentClosestPrey = 15f;
-    public double pastClosestPrey = 15f;
+    public int timesFollowedPrey = 0;
+    float currentClosestPrey = 15f;
+    float lastClosestPrey = 15f;
 
-    //LOGIC
-    int rayCastNumber = 0;
-    // ANN
-    public double[] inputs = new double[25];
-    public double[] outputs = new double[2];
-    public Genome Genome { get; set; }
-    public Specie Specie { get; set; }
-    double MUTATION_RATE = 0.45;
-    double ADD_CONN_RATE = 0.25;
-    double ADD_NODE_RATE = 0.15;
-    const double C1 = 1.0;
-    const double C2 = 1.0;
-    const double C3 = 0.4;
-    const double DT = 10;
 
     //MOVEMENT
-    public float outputSpeed = 0;
-    public float outputRotation = 0;
+    float outputSpeed = 0;
+    float outputRotation = 0;
 
 
 
@@ -54,6 +34,8 @@ public class Predator : MonoBehaviour
     private void Awake()
     {
         populationManager = GameObject.Find("PopulationManager").GetComponent<PopulationManager>();
+        xBorder = populationManager.xBorder;
+        yBorder = populationManager.yBorder;
     }
     void Start()
     {
@@ -63,10 +45,10 @@ public class Predator : MonoBehaviour
     {
         // STATS TRACKING
         timeSurvived += Time.deltaTime;
-        energy = Mathf.Clamp(energy - energyConsumption * Time.deltaTime, 0f, maxEnergy);
+        energy = Mathf.Clamp(energy - Time.deltaTime, 0f, maxEnergy);
         if (energy <= 0)
         {
-            populationManager.RemoveFromPredatorPopulation(gameObject);
+            populationManager.UpdateAgentPopulation(gameObject, false, AGENTTYPE.PREDATOR);
 
         }
         if (eaten)
@@ -84,23 +66,24 @@ public class Predator : MonoBehaviour
         inputs[rayCastNumber] = hitInput1.collider?.tag.StartsWith("Prey") == true ? (float)(hitInput1.distance / 67f) : 1f;
         if (inputs[rayCastNumber] < currentClosestPrey) 
         {
-            currentClosestPrey = inputs[rayCastNumber];
+            currentClosestPrey = (float)inputs[rayCastNumber];
         }
         if (rayCastNumber == 24)
         {
-            if (currentClosestPrey < pastClosestPrey)
+            if (currentClosestPrey < lastClosestPrey)
             {
-                timesFollowed++;
+                timesFollowedPrey++;
             }
-            pastClosestPrey = currentClosestPrey;
-            currentClosestPrey = 1d;
+            lastClosestPrey = currentClosestPrey;
+            currentClosestPrey = 1f;
             for (int i = 0; i < inputs.Length; i++)
             {
                 if (inputs[i] < 1f)
                 {
                     inputs[i] = 1 - inputs[i];
                 }
-                else {
+                else
+                {
                     inputs[i] = -1;
                 }
             }
@@ -152,8 +135,12 @@ public class Predator : MonoBehaviour
     //}
 
 
-    void CreateChild()
+    protected override void CreateChild()
     {
+            double MUTATION_RATE = 0.45;
+    double ADD_CONN_RATE = 0.25;
+    double ADD_NODE_RATE = 0.15;
+
         preyEaten = 0;
         eaten = true;
         GameObject go = Instantiate(gameObject);
@@ -161,7 +148,7 @@ public class Predator : MonoBehaviour
         go.GetComponent<Predator>().timeSurvived = 0f;
         go.GetComponent<Predator>().children = 0;
         go.GetComponent<Predator>().preyEaten = 0;
-        go.GetComponent<Predator>().timesFollowed = 0;
+        go.GetComponent<Predator>().timesFollowedPrey = 0;
         go.GetComponent<Predator>().generation++;
         go.name = "Predator";
 
@@ -172,10 +159,10 @@ public class Predator : MonoBehaviour
         if (random.NextDouble() < ADD_CONN_RATE) go.GetComponent<Predator>().Genome.ConnectionMutation(random, populationManager.predatorConnInnov);
         if (random.NextDouble() < ADD_NODE_RATE) go.GetComponent<Predator>().Genome.NodeMutation(random, populationManager.predatorNodeInnov, populationManager.predatorConnInnov);
         go.GetComponent<Predator>().selectSpecie(this.Specie);
-        populationManager.AddToPredatorPopulation(go);
+        populationManager.UpdateAgentPopulation(go, true, AGENTTYPE.PREDATOR);
     }
 
-    public void NeatSetup()
+    public override void NeatSetup()
     {
         Genome = new NEAT.Genome();
         for (int i = 0; i < inputs.Length; i++)
@@ -198,8 +185,13 @@ public class Predator : MonoBehaviour
         this.createNewSpecie();
     }
 
-    public void selectSpecie(Specie sp)
+    public override void selectSpecie(Specie sp)
     {
+        const double C1 = 1.0;
+        const double C2 = 1.0;
+        const double C3 = 0.4;
+        const double DT = 5;
+
         bool CreateNew = true;
         double dist = Genome.CompatibilityDistance(Genome, sp.mascot, C1, C2, C3);
         if (dist < DT)
@@ -219,7 +211,7 @@ public class Predator : MonoBehaviour
         }
     }
 
-    private void createNewSpecie()
+    protected override void createNewSpecie()
     {
         this.Specie = new Specie();
         this.Specie.setMascot(this.Genome);
@@ -227,7 +219,7 @@ public class Predator : MonoBehaviour
         this.Specie.addGO(gameObject);
     }
 
-    public void removeSpecie()
+    public override void removeSpecie()
     {
        
         this.Specie.removeGO(gameObject);

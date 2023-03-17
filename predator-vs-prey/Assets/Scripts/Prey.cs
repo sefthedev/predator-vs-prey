@@ -3,58 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 using NEAT;
 
-public class Prey : MonoBehaviour
+public class Prey : Agent
 {
 
 
     //SETTINGS
-    float xBorder = 40;
-    float yBorder = 40;
     PopulationManager populationManager;
-    System.Random random = new System.Random();
 
     // GAMERULE 
-    static float timeToSplit = 7f;
-    [SerializeField] static float maxEnergy = 15f;
-    float energy = maxEnergy;
+    float timeToSplit = 7f;
 
     // STATS
-    public int generation = 0;
-    public float timeSurvived = 0f;
-    public float distanceTraveled = 0f;
+    float distanceTraveled = 0f;
     public int timesEscaped = 0;
 
     // LOGIC
     Vector3 pos;
-    int rayCastNumber = 0;
     float splitTime = 0f;
     bool escaping = false;
     bool inDanger = false;
     bool exhausted = false;
     public bool removeObject = false;
 
-    // ANN
-    public double[] inputs = new double[25];
-    public double[] outputs = new double[2];
-    public Genome Genome { get; set; }
-    public Specie Specie { get; set; }
-    double MUTATION_RATE = 0.45;
-    double ADD_CONN_RATE = 0.25;
-    double ADD_NODE_RATE = 0.15;
-    const double C1 = 1.0;
-    const double C2 = 1.0;
-    const double C3 = 0.4;
-    const double DT = 10;
+
 
     //MOVEMENT
-    public float outputSpeed = 0;
-    public float outputRotation = 0;
+    float outputSpeed = 0;
+    float outputRotation = 0;
 
 
     private void Awake()
     {
         populationManager = GameObject.Find("PopulationManager").GetComponent<PopulationManager>();
-
+        xBorder = populationManager.xBorder;
+        yBorder = populationManager.yBorder;
     }
 
     void Start()
@@ -67,7 +49,7 @@ public class Prey : MonoBehaviour
         if (removeObject)
         {
             this.gameObject.SetActive(false);
-            populationManager.RemoveFromPreyPopulation(gameObject);
+            populationManager.UpdateAgentPopulation(gameObject, false, AGENTTYPE.PREY);
             this.removeSpecie();
             Destroy(this.gameObject);
         }
@@ -95,7 +77,7 @@ public class Prey : MonoBehaviour
             splitTime = 0f;
             if (populationManager.PreyPopulation < populationManager.PreyPopulationMaxSize)
             {
-                createChild();
+                this.CreateChild();
             }
         }
 
@@ -188,8 +170,12 @@ public class Prey : MonoBehaviour
         transform.position = newPosition;
     }
 
-    void createChild()
+    protected override void CreateChild()
     {
+        double MUTATION_RATE = 0.45;
+        double ADD_CONN_RATE = 0.25;
+        double ADD_NODE_RATE = 0.15;
+
         GameObject go = Instantiate(gameObject);
         // RESETTING STATS
         go.GetComponent<Prey>().distanceTraveled = 0f;
@@ -210,10 +196,10 @@ public class Prey : MonoBehaviour
         //if (random.NextDouble() < (1 - 1f / ((100f / ((float)(this.generation + 1)) / 30f))) + ADD_CONN_RATE) go.GetComponent<Prey>().Genome.ConnectionMutation(random, populationManager.connInnov);
         //if (random.NextDouble() < (1 - 1f / ((100f /((float)(this.generation + 1)) / 20f)))+ ADD_NODE_RATE) go.GetComponent<Prey>().Genome.NodeMutation(random, populationManager.nodeInnov, populationManager.connInnov
         go.GetComponent<Prey>().selectSpecie(this.Specie);
-        populationManager.AddToPreyPopulation(go);
+        populationManager.UpdateAgentPopulation(go, true, AGENTTYPE.PREY);
     }
 
-    public void NeatSetup()
+    public override void NeatSetup()
     {
         Genome = new NEAT.Genome();
         for (int i = 0; i < inputs.Length; i++)
@@ -230,8 +216,13 @@ public class Prey : MonoBehaviour
         this.createNewSpecie();
     }
 
-    public void selectSpecie(Specie sp)
+    public override void selectSpecie(Specie sp)
     {
+        const double C1 = 1.0;
+        const double C2 = 1.0;
+        const double C3 = 0.4;
+        const double DT = 5;
+
         bool CreateNew = true;
         double dist = Genome.CompatibilityDistance(Genome, sp.mascot, C1, C2, C3);
         if (dist < DT)
@@ -240,10 +231,6 @@ public class Prey : MonoBehaviour
             this.Specie.addGO(gameObject);
             CreateNew = false;
         }
-        //if (specie.size == 0 || specie.shouldBeRemoved)
-        //{
-        //    populationManager.preySpecies.Remove(specie);
-        //}
 
         if (CreateNew == true)
         {
@@ -251,7 +238,7 @@ public class Prey : MonoBehaviour
         }
     }
 
-    private void createNewSpecie()
+    protected override void createNewSpecie()
     {
         this.Specie = new Specie();
         this.Specie.setMascot(this.Genome);
@@ -259,7 +246,7 @@ public class Prey : MonoBehaviour
         this.Specie.addGO(gameObject);
     }
 
-    public void removeSpecie()
+    public override void removeSpecie()
     {
         
         this.Specie.removeGO(gameObject);

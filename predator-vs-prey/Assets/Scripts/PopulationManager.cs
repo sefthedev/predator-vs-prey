@@ -4,18 +4,21 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+public enum AGENTTYPE { PREDATOR, PREY };
+
 public class PopulationManager : MonoBehaviour
 {
+    
     //SETTINGS
-    float xBorder = 40;
-    float yBorder = 40;
+    public float xBorder = 40;
+    public float yBorder = 40;
     System.Random random = new System.Random();
     
     //PREFABS
     [SerializeField] GameObject predatorPrefab;
     [SerializeField] GameObject preyPrefab;
     //STATS
-    [SerializeField] int predatorPopulationMaxSize = 170;
+    [SerializeField] int predatorPopulationMaxSize = 180;
     [SerializeField] int preyPopulationMaxSize = 800;
     private int predatorNodeCount = 0;
     private int predatorConnectionCount = 0;
@@ -34,7 +37,7 @@ public class PopulationManager : MonoBehaviour
     public int predatorSpecies = 0;
     public int preySpecies = 0;
     //INNOVATION
-    public InnovationGen predatorNodeInnov = new InnovationGen();
+    public InnovationGen predatorNodeInnov = new InnovationGen ();
     public InnovationGen predatorConnInnov = new InnovationGen();
     public InnovationGen preyNodeInnov = new InnovationGen();
     public InnovationGen preyConnInnov = new InnovationGen();
@@ -60,7 +63,7 @@ public class PopulationManager : MonoBehaviour
             Quaternion rot = Quaternion.Euler(0, 0, Random.Range(0, 365));
             GameObject go = Instantiate(predatorPrefab, pos, rot);
             go.GetComponent<Predator>().NeatSetup();
-            this.AddToPredatorPopulation(go);
+            this.UpdateAgentPopulation(go, true, AGENTTYPE.PREDATOR);
         }
 
         for (int i = 0; i < preyPopulationMaxSize; i++)
@@ -69,7 +72,7 @@ public class PopulationManager : MonoBehaviour
             Quaternion rot = Quaternion.Euler(0, 0, Random.Range(0, 365));
             GameObject go = Instantiate(preyPrefab, pos, rot);
             go.GetComponent<Prey>().NeatSetup();
-            this.AddToPreyPopulation(go);
+            this.UpdateAgentPopulation(go, true, AGENTTYPE.PREY);
         }
         string filePath = Application.dataPath + "/predatorVprey.csv";
 
@@ -88,51 +91,56 @@ public class PopulationManager : MonoBehaviour
         passedTime = (float)System.Math.Round(passedTime + 0.05f, 2);
         InvokeRepeating("WriteStats", 3.0f, 3.0f);
 
-    } 
-    
-    public void AddToPredatorPopulation(GameObject go)
-    {
-        predatorConnectionCount += go.GetComponent<Predator>().Genome.connections.Count;
-        predatorNodeCount += go.GetComponent<Predator>().Genome.nodes.Count;
-        predatorGenCount += go.GetComponent<Predator>().generation;
-        predatorPopulation.Add(go);
     }
-    public void AddToPreyPopulation(GameObject go)
+
+
+    public void UpdateAgentPopulation(GameObject go, bool addAgent, AGENTTYPE agentType)
     {
-        preyConnectionCount += go.GetComponent<Prey>().Genome.connections.Count;
-        preyNodeCount += go.GetComponent<Prey>().Genome.nodes.Count;
-        preyGenCount += go.GetComponent<Prey>().generation;
-        preyPopulation.Add(go);
-    }
-    public void RemoveFromPredatorPopulation(GameObject go)
-    {
-        predatorPopulation.Remove(go);
-        if (go.GetComponent<Predator>().Specie.bestScore < (go.GetComponent<Predator>().children * 0.1f + go.GetComponent<Predator>().timesFollowed * 0.5f + go.GetComponent<Predator>().timeSurvived * 0.1f))
+        if (agentType == AGENTTYPE.PREDATOR && addAgent)
         {
-            go.GetComponent<Predator>().Specie.bestScore = go.GetComponent<Predator>().children * 0.5f + go.GetComponent<Predator>().timeSurvived * 0.1f;
-            go.GetComponent<Predator>().Specie.setMascot(Genome.copyGenome(go.GetComponent<Predator>().Genome));
+            predatorConnectionCount += go.GetComponent<Predator>().Genome.connections.Count;
+            predatorNodeCount += go.GetComponent<Predator>().Genome.nodes.Count;
+            predatorGenCount += go.GetComponent<Predator>().generation;
+            predatorPopulation.Add(go);
         }
-        predatorConnectionCount -= go.GetComponent<Predator>().Genome.connections.Count;
-        predatorNodeCount -= go.GetComponent<Predator>().Genome.nodes.Count;
-        predatorGenCount -= go.GetComponent<Predator>().generation;
-
-        go.GetComponent<Predator>().removeSpecie();
-        Destroy(go);
-    }
-
-    public void RemoveFromPreyPopulation(GameObject go)
-    {
-        if (go.GetComponent<Prey>().Specie.bestScore < (go.GetComponent<Prey>().timesEscaped * 0.5f + go.GetComponent<Prey>().timeSurvived * 0.1f))
+        if (agentType == AGENTTYPE.PREDATOR && !addAgent)
         {
-            go.GetComponent<Prey>().Specie.bestScore = go.GetComponent<Prey>().timesEscaped * 0.5f + go.GetComponent<Prey>().timeSurvived * 0.1f;
-            go.GetComponent<Prey>().Specie.setMascot(Genome.copyGenome(go.GetComponent<Prey>().Genome));
-        }
-        preyConnectionCount -= go.GetComponent<Prey>().Genome.connections.Count;
-        preyNodeCount -= go.GetComponent<Prey>().Genome.nodes.Count;
-        preyGenCount -= go.GetComponent<Prey>().generation;
-        preyPopulation.Remove(go);
-    }
+            predatorPopulation.Remove(go);
+            if (go.GetComponent<Predator>().Specie.bestScore < (go.GetComponent<Predator>().children * 0.1f + go.GetComponent<Predator>().timesFollowedPrey * 0.5f + go.GetComponent<Predator>().timeSurvived * 0.1f))
+            {
+                go.GetComponent<Predator>().Specie.bestScore = go.GetComponent<Predator>().children * 0.5f + go.GetComponent<Predator>().timeSurvived * 0.1f;
+                go.GetComponent<Predator>().Specie.setMascot(Genome.copyGenome(go.GetComponent<Predator>().Genome));
+            }
+            predatorConnectionCount -= go.GetComponent<Predator>().Genome.connections.Count;
+            predatorNodeCount -= go.GetComponent<Predator>().Genome.nodes.Count;
+            predatorGenCount -= go.GetComponent<Predator>().generation;
 
+            go.GetComponent<Predator>().removeSpecie();
+            Destroy(go);
+        }
+
+        if (agentType == AGENTTYPE.PREY && addAgent)
+        {
+            preyConnectionCount += go.GetComponent<Prey>().Genome.connections.Count;
+            preyNodeCount += go.GetComponent<Prey>().Genome.nodes.Count;
+            preyGenCount += go.GetComponent<Prey>().generation;
+            preyPopulation.Add(go);
+        }
+
+        if (agentType == AGENTTYPE.PREY && !addAgent)
+        {
+            if (go.GetComponent<Prey>().Specie.bestScore < (go.GetComponent<Prey>().timesEscaped * 0.5f + go.GetComponent<Prey>().timeSurvived * 0.1f))
+            {
+                go.GetComponent<Prey>().Specie.bestScore = go.GetComponent<Prey>().timesEscaped * 0.5f + go.GetComponent<Prey>().timeSurvived * 0.1f;
+                go.GetComponent<Prey>().Specie.setMascot(Genome.copyGenome(go.GetComponent<Prey>().Genome));
+            }
+            preyConnectionCount -= go.GetComponent<Prey>().Genome.connections.Count;
+            preyNodeCount -= go.GetComponent<Prey>().Genome.nodes.Count;
+            preyGenCount -= go.GetComponent<Prey>().generation;
+            preyPopulation.Remove(go);
+        }
+    }
+   
 
     void Update()
     {
