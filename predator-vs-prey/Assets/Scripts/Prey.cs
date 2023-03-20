@@ -26,12 +26,6 @@ public class Prey : Agent
     public bool removeObject = false;
 
 
-
-    //MOVEMENT
-    float outputSpeed = 0;
-    float outputRotation = 0;
-
-
     private void Awake()
     {
         populationManager = GameObject.Find("PopulationManager").GetComponent<PopulationManager>();
@@ -152,21 +146,6 @@ public class Prey : Agent
         transform.Rotate(new Vector3(0, 0, rotation * 720) * Time.deltaTime);
     }
 
-    private void FixedUpdate()
-    {
-        // SCREN WRAPPING
-        Vector3 newPosition = transform.position;
-        if (newPosition.x > SimulationRules.xBorder || newPosition.x < -SimulationRules.xBorder)
-        {
-            newPosition.x = newPosition.x > SimulationRules.xBorder ? -SimulationRules.xBorder : SimulationRules.xBorder;
-        }
-
-        if (newPosition.y > SimulationRules.yBorder || newPosition.y < -SimulationRules.yBorder)
-        {
-            newPosition.y = newPosition.y > SimulationRules.yBorder ? -SimulationRules.yBorder : SimulationRules.yBorder;
-        }
-        transform.position = newPosition;
-    }
 
     protected override void CreateChild()
     {

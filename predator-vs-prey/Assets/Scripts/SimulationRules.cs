@@ -9,5 +9,6 @@ public static class SimulationRules
     public static int predatorPopulationMaxSize = 180;
     public static int preyPopulationMaxSize = 800;
     public static float timeToSplit = 7f;
+    public static int eatenPreyToSplit = 4;
     public static readonly float maxEnergy = 15f;
 }

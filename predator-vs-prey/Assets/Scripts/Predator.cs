@@ -12,7 +12,6 @@ public class Predator : Agent
 
     // GAMERULE 
     int preyEaten = 0;
-    int eatenPreyToSplit = 4;
     bool eaten = false;
     float eatenCd = 0.25f;
 
@@ -24,9 +23,6 @@ public class Predator : Agent
     float lastClosestPrey = 15f;
 
 
-    //MOVEMENT
-    float outputSpeed = 0;
-    float outputRotation = 0;
 
 
 
@@ -106,21 +102,7 @@ public class Predator : Agent
 
     }
 
-    private void FixedUpdate()
-    {
-        // SCREEN WRAPPING LOGIC
-        Vector3 newPosition = transform.position;
-        if (newPosition.x > SimulationRules.xBorder || newPosition.x < -SimulationRules.xBorder)
-        {
-            newPosition.x = newPosition.x > SimulationRules.xBorder ? -SimulationRules.xBorder : SimulationRules.xBorder;
-        }
 
-        if (newPosition.y > SimulationRules.yBorder || newPosition.y < -SimulationRules.yBorder)
-        {
-            newPosition.y = newPosition.y > SimulationRules.yBorder ? -SimulationRules.yBorder : SimulationRules.yBorder;
-        }
-        transform.position = newPosition;
-    }
 
     //public void AddNodeGene(NEAT.NodeGenes node)
     //{
@@ -234,7 +216,7 @@ public class Predator : Agent
                 collision.gameObject.GetComponent<Prey>().removeObject = true;
                 preyEaten++;
                 energy = Mathf.Clamp(energy + 0.6f * SimulationRules.maxEnergy, 0f, SimulationRules.maxEnergy);
-                if (preyEaten >= eatenPreyToSplit)
+                if (preyEaten >= SimulationRules.eatenPreyToSplit)
                 {
                     if (!eaten)
                     {
@@ -243,8 +225,8 @@ public class Predator : Agent
                     }
                     else
                     {
-                        eatenCd = 0.3f;
-                        preyEaten = eatenPreyToSplit - 1;
+                        eatenCd = 0.25f;
+                        preyEaten = SimulationRules.eatenPreyToSplit - 1;
                     }
                     if (populationManager.PredatorPopulation < SimulationRules.predatorPopulationMaxSize && !eaten)
                     {
