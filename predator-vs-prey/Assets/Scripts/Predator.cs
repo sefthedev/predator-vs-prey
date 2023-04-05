@@ -56,9 +56,9 @@ public class Predator : Agent
         }
 
         // RAYCAST
-        RaycastHit2D hitInput1 = Physics2D.Raycast(this.transform.position, Quaternion.AngleAxis((rayCastNumber - 12) * 3f, transform.forward) * transform.right, 67f);
+        RaycastHit2D hitInput1 = Physics2D.Raycast(this.transform.position, Quaternion.AngleAxis((rayCastNumber - 12) * 2f, transform.forward) * transform.right, 67f);
         inputs[rayCastNumber] = hitInput1.collider?.tag.StartsWith("Prey") == true ? (float)(hitInput1.distance / 67f) : 1f;
-        if (inputs[rayCastNumber] < currentClosestPrey) 
+        if (inputs[rayCastNumber] < currentClosestPrey)
         {
             currentClosestPrey = (float)inputs[rayCastNumber];
         }
@@ -83,7 +83,7 @@ public class Predator : Agent
             }
 
             this.outputs = this.Genome.Compute(inputs);
-            outputSpeed = (float)outputs[0] * (float)outputs[0];
+            outputSpeed = Mathf.Abs((float)outputs[0]);
             outputRotation = (float)outputs[1];
             rayCastNumber = 0;
         }
@@ -93,11 +93,11 @@ public class Predator : Agent
         }
 
         // MOVEMENT
-        float speed = outputSpeed;
+        float speed = outputSpeed * 10f;
         float rotation = outputRotation;
-        transform.position += transform.right * speed * 12f * Time.deltaTime;
-        energy -= Mathf.Abs(speed) * Time.deltaTime  ;
-        transform.Rotate(new Vector3(0, 0, rotation * 720) * Time.deltaTime);
+        transform.position += transform.right * speed * Time.deltaTime;
+        energy -= Mathf.Abs(speed / 10f) * Time.deltaTime  ;
+        transform.Rotate(new Vector3(0, 0, rotation * 360f) * Time.deltaTime);
 
 
     }
@@ -117,9 +117,9 @@ public class Predator : Agent
 
     protected override void CreateChild()
     {
-            double MUTATION_RATE = 0.45;
-    double ADD_CONN_RATE = 0.25;
-    double ADD_NODE_RATE = 0.15;
+        double MUTATION_RATE = 0.45;
+        double ADD_CONN_RATE = 0.25;
+        double ADD_NODE_RATE = 0.15;
 
         preyEaten = 0;
         eaten = true;
@@ -152,15 +152,6 @@ public class Predator : Agent
         Genome.AddNodeGene(new NodeGenes(NodeGenes.TYPE.OUTPUT, populationManager.predatorNodeInnov.GetInnovation()));
         Genome.AddNodeGene(new NodeGenes(NodeGenes.TYPE.OUTPUT, populationManager.predatorNodeInnov.GetInnovation()));
         Genome.ConnectionMutation(random, populationManager.predatorConnInnov);
-        Genome.ConnectionMutation(random, populationManager.predatorConnInnov);
-        Genome.ConnectionMutation(random, populationManager.predatorConnInnov);
-        Genome.ConnectionMutation(random, populationManager.predatorConnInnov);
-        Genome.ConnectionMutation(random, populationManager.predatorConnInnov);
-        Genome.ConnectionMutation(random, populationManager.predatorConnInnov);
-        Genome.Mutation(random);
-        Genome.Mutation(random);
-        Genome.Mutation(random);
-        Genome.Mutation(random);
         Genome.Mutation(random);
         this.createNewSpecie();
     }
@@ -215,7 +206,7 @@ public class Predator : Agent
             {
                 collision.gameObject.GetComponent<Prey>().removeObject = true;
                 preyEaten++;
-                energy = Mathf.Clamp(energy + 0.6f * SimulationRules.maxEnergy, 0f, SimulationRules.maxEnergy);
+                energy = Mathf.Clamp(energy + 0.4f * SimulationRules.maxEnergy, 0f, SimulationRules.maxEnergy);
                 if (preyEaten >= SimulationRules.eatenPreyToSplit)
                 {
                     if (!eaten)

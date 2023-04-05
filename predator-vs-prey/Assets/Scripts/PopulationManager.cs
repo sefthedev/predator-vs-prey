@@ -103,9 +103,10 @@ public class PopulationManager : MonoBehaviour
         if (agentType == AGENTTYPE.PREDATOR && !addAgent)
         {
             predatorPopulation.Remove(go);
-            if (go.GetComponent<Predator>().Genome.Specie.bestScore < (go.GetComponent<Predator>().children * 0.1f + go.GetComponent<Predator>().timesFollowedPrey * 0.5f + go.GetComponent<Predator>().timeSurvived * 0.1f))
+            //if (go.GetComponent<Predator>().Genome.Specie.bestScore < (go.GetComponent<Predator>().children * 0.1f + go.GetComponent<Predator>().timesFollowedPrey * 0.5f + go.GetComponent<Predator>().timeSurvived * 0.1f))
+            if (go.GetComponent<Predator>().Genome.Specie.bestScore < (go.GetComponent<Predator>().children * 0.1f + go.GetComponent<Predator>().timeSurvived * 0.1f))
             {
-                go.GetComponent<Predator>().Genome.Specie.bestScore = go.GetComponent<Predator>().children * 0.5f + go.GetComponent<Predator>().timeSurvived * 0.1f;
+                go.GetComponent<Predator>().Genome.Specie.bestScore = go.GetComponent<Predator>().children * 0.1f + go.GetComponent<Predator>().timeSurvived * 0.1f;
                 go.GetComponent<Predator>().Genome.Specie.setMascot(Genome.copyGenome(go.GetComponent<Predator>().Genome));
             }
             predatorConnectionCount -= go.GetComponent<Predator>().Genome.connections.Count;
@@ -149,7 +150,7 @@ public class PopulationManager : MonoBehaviour
             "||||||||||||   average Pred/Prey nodeCount:     " + System.Math.Round((float)predatorNodeCount / predatorPopulation.Count)+ "/" + System.Math.Round((float)preyNodeCount / preyPopulation.Count) +
             "||||||||||||   average Pred/Prey Generation:     " + System.Math.Round((float)predatorGenCount/predatorPopulation.Count) + "/" + System.Math.Round((float)preyGenCount/preyPopulation.Count)+
             "||||||||||||   predatorPopulation:     " + this.predatorPopulation.Count + "||||||||||||   preyPopulation:     " + this.preyPopulation.Count +
-            "||||||||||||   predatorSpeciesCount:     " + this.predatorSpecies + "||||||||||||   preySpeciesCount:     " + this.preySpecies + "record"+this.preyPopulation[0].GetComponent<Prey>().Genome.Specie.bestScore+ this.predatorPopulation[0].GetComponent<Predator>().Genome.Specie.bestScore);
+            "||||||||||||   predatorSpeciesCount:     " + this.predatorSpecies + "||||||||||||   preySpeciesCount:     " + this.preySpecies);
     }
 
     private void WriteStats()

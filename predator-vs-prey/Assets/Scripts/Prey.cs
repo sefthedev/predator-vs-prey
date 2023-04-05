@@ -14,7 +14,6 @@ public class Prey : Agent
 
 
     // STATS
-    float distanceTraveled = 0f;
     public int timesEscaped = 0;
 
     // LOGIC
@@ -56,7 +55,6 @@ public class Prey : Agent
         }
         else
         {
-            distanceTraveled += Vector3.Distance(pos, transform.position);
             pos = transform.position;
         }
         if (exhausted && energy > (SimulationRules.maxEnergy / 2f))
@@ -134,7 +132,7 @@ public class Prey : Agent
         {
             if (!exhausted)
             {
-                transform.position += transform.right * speed * 12f * Time.deltaTime;
+                transform.position += transform.right * speed * 10f * Time.deltaTime;
 
                 energy -= Mathf.Abs(speed) * Time.deltaTime ;
             }
@@ -143,7 +141,7 @@ public class Prey : Agent
         {
             exhausted = true;
         }
-        transform.Rotate(new Vector3(0, 0, rotation * 720) * Time.deltaTime);
+        transform.Rotate(new Vector3(0, 0, rotation * 360f) * Time.deltaTime);
     }
 
 
@@ -155,7 +153,6 @@ public class Prey : Agent
 
         GameObject go = Instantiate(gameObject);
         // RESETTING STATS
-        go.GetComponent<Prey>().distanceTraveled = 0f;
         go.GetComponent<Prey>().timesEscaped = 0;
         go.GetComponent<Prey>().timeSurvived = 0f;
         go.GetComponent<Prey>().splitTime += (float)random.NextDouble();
@@ -185,10 +182,7 @@ public class Prey : Agent
         }
         Genome.AddNodeGene(new NodeGenes(NodeGenes.TYPE.OUTPUT, populationManager.preyNodeInnov.GetInnovation()));
         Genome.AddNodeGene(new NodeGenes(NodeGenes.TYPE.OUTPUT, populationManager.preyNodeInnov.GetInnovation()));
-
         Genome.ConnectionMutation(random, populationManager.preyConnInnov);
-        Genome.ConnectionMutation(random, populationManager.preyConnInnov);
-        Genome.Mutation(random);
         Genome.Mutation(random);
         this.createNewSpecie();
     }
