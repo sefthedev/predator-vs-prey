@@ -43,8 +43,8 @@ public class PopulationManager : MonoBehaviour
     //int bestPreyPoints = 0;
     //public Genome bestPreyGenome;
     //WEIGHTS FOR SPECIE
-
-
+    public Genome bestPredatorGenome;
+    public Genome bestPreyGenome;
 
 
 
@@ -62,7 +62,7 @@ public class PopulationManager : MonoBehaviour
             go.GetComponent<Predator>().NeatSetup();
             this.UpdateAgentPopulation(go, true, AGENTTYPE.PREDATOR);
         }
-
+        bestPredatorGenome = this.predatorPopulation[0].GetComponent<Predator>().Genome;
         for (int i = 0; i < SimulationRules.preyPopulationMaxSize; i++)
         {
             Vector3 pos = new Vector3(Random.Range(-SimulationRules.xBorder, SimulationRules.xBorder), Random.Range(-SimulationRules.yBorder, SimulationRules.yBorder), 0);
@@ -72,6 +72,7 @@ public class PopulationManager : MonoBehaviour
             this.UpdateAgentPopulation(go, true, AGENTTYPE.PREY);
         }
         string filePath = Application.dataPath + "/predatorVprey.csv";
+        bestPreyGenome = this.preyPopulation[0].GetComponent<Prey>().Genome;
 
 
         using (StreamWriter sw = new StreamWriter(filePath))
@@ -104,16 +105,14 @@ public class PopulationManager : MonoBehaviour
         {
             predatorPopulation.Remove(go);
             //if (go.GetComponent<Predator>().Genome.Specie.bestScore < (go.GetComponent<Predator>().children * 0.1f + go.GetComponent<Predator>().timesFollowedPrey * 0.5f + go.GetComponent<Predator>().timeSurvived * 0.1f))
-            if (go.GetComponent<Predator>().Genome.Specie.bestScore < (go.GetComponent<Predator>().children * 0.1f + go.GetComponent<Predator>().timeSurvived * 0.1f))
+            if (this.bestPredatorGenome.score < (go.GetComponent<Predator>().children * 0.1f + go.GetComponent<Predator>().timeSurvived * 0.1f))
             {
-                go.GetComponent<Predator>().Genome.Specie.bestScore = go.GetComponent<Predator>().children * 0.1f + go.GetComponent<Predator>().timeSurvived * 0.1f;
-                go.GetComponent<Predator>().Genome.Specie.setMascot(Genome.copyGenome(go.GetComponent<Predator>().Genome));
+                this.bestPredatorGenome.score = go.GetComponent<Predator>().children * 0.1f + go.GetComponent<Predator>().timeSurvived * 0.1f;
+                this.bestPredatorGenome = go.GetComponent<Predator>().Genome;
             }
             predatorConnectionCount -= go.GetComponent<Predator>().Genome.connections.Count;
             predatorNodeCount -= go.GetComponent<Predator>().Genome.nodes.Count;
             predatorGenCount -= go.GetComponent<Predator>().generation;
-
-            go.GetComponent<Predator>().removeSpecie();
             Destroy(go);
         }
 
@@ -127,10 +126,10 @@ public class PopulationManager : MonoBehaviour
 
         if (agentType == AGENTTYPE.PREY && !addAgent)
         {
-            if (go.GetComponent<Prey>().Genome.Specie.bestScore < (go.GetComponent<Prey>().timesEscaped * 0.5f + go.GetComponent<Prey>().timeSurvived * 0.1f))
+            if (this.bestPreyGenome.score < (go.GetComponent<Prey>().timesEscaped * 0.5f + go.GetComponent<Prey>().timeSurvived * 0.1f))
             {
-                go.GetComponent<Prey>().Genome.Specie.bestScore = go.GetComponent<Prey>().timesEscaped * 0.5f + go.GetComponent<Prey>().timeSurvived * 0.1f;
-                go.GetComponent<Prey>().Genome.Specie.setMascot(Genome.copyGenome(go.GetComponent<Prey>().Genome));
+                this.bestPreyGenome.score = go.GetComponent<Prey>().timesEscaped * 0.5f + go.GetComponent<Prey>().timeSurvived * 0.1f;
+                this.bestPreyGenome = go.GetComponent<Prey>().Genome;
             }
             preyConnectionCount -= go.GetComponent<Prey>().Genome.connections.Count;
             preyNodeCount -= go.GetComponent<Prey>().Genome.nodes.Count;

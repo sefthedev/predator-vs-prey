@@ -41,7 +41,6 @@ public class Prey : Agent
         {
             this.gameObject.SetActive(false);
             populationManager.UpdateAgentPopulation(gameObject, false, AGENTTYPE.PREY);
-            this.removeSpecie();
             Destroy(this.gameObject);
         }
         // STATS TRACKING
@@ -162,14 +161,13 @@ public class Prey : Agent
         //GENOME
         //go.GetComponent<Prey>().Genome = NEAT.Genome.copyGenome(this.Genome);
 
-        go.GetComponent<Prey>().Genome = Genome.Cross(this.Genome, this.Genome.Specie.mascot, random);
+        go.GetComponent<Prey>().Genome = Genome.Cross(this.Genome, populationManager.bestPreyGenome, random);
         if (random.NextDouble() < MUTATION_RATE) go.GetComponent<Prey>().Genome.Mutation(random);
         if (random.NextDouble() < ADD_CONN_RATE) go.GetComponent<Prey>().Genome.ConnectionMutation(random, populationManager.preyConnInnov);
         if (random.NextDouble() < ADD_NODE_RATE) go.GetComponent<Prey>().Genome.NodeMutation(random, populationManager.preyNodeInnov, populationManager.preyConnInnov);
         //if (random.NextDouble() < (1 - 1f / ((100f / ((float)(this.generation + 1)) / 50f)))+MUTATION_RATE) go.GetComponent<Prey>().Genome.Mutation(random);
         //if (random.NextDouble() < (1 - 1f / ((100f / ((float)(this.generation + 1)) / 30f))) + ADD_CONN_RATE) go.GetComponent<Prey>().Genome.ConnectionMutation(random, populationManager.connInnov);
         //if (random.NextDouble() < (1 - 1f / ((100f /((float)(this.generation + 1)) / 20f)))+ ADD_NODE_RATE) go.GetComponent<Prey>().Genome.NodeMutation(random, populationManager.nodeInnov, populationManager.connInnov
-        go.GetComponent<Prey>().selectSpecie(this.Genome.Specie);
         populationManager.UpdateAgentPopulation(go, true, AGENTTYPE.PREY);
     }
 
@@ -184,45 +182,6 @@ public class Prey : Agent
         Genome.AddNodeGene(new NodeGenes(NodeGenes.TYPE.OUTPUT, populationManager.preyNodeInnov.GetInnovation()));
         Genome.ConnectionMutation(random, populationManager.preyConnInnov);
         Genome.Mutation(random);
-        this.createNewSpecie();
-    }
-
-    public override void selectSpecie(Specie sp)
-    {
-        const double C1 = 1.0;
-        const double C2 = 1.0;
-        const double C3 = 0.4;
-        const double DT = 5;
-
-        bool CreateNew = true;
-        double dist = Genome.CompatibilityDistance(Genome, sp.mascot, C1, C2, C3);
-        if (dist < DT)
-        {
-            this.Genome.Specie = sp;
-            this.Genome.Specie.addMember();
-            CreateNew = false;
-        }
-
-        if (CreateNew == true)
-        {
-            this.createNewSpecie();
-        }
-    }
-
-    protected override void createNewSpecie()
-    {
-        this.Genome.Specie = new Specie();
-        this.Genome.Specie.setMascot(this.Genome);
-        populationManager.preySpecies++;
-        this.Genome.Specie.addMember();
-    }
-
-    public override void removeSpecie()
-    {
-        
-        this.Genome.Specie.removeMember();
-        if (this.Genome.Specie.memberCount == 0)
-            populationManager.preySpecies--;
     }
 
 }

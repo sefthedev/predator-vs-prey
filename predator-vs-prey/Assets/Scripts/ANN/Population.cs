@@ -12,7 +12,6 @@ namespace NEAT
         InnovationGen nodeInnov = new InnovationGen();
         InnovationGen connInnov = new InnovationGen();
         Random random = new Random();
-        public List<Specie> species = new List<Specie>();
         //public List<Genome> agents = new List<Genome>();
         public List<Genome> agents = new List<Genome>();
         public List<Genome> deadagents = new List<Genome>();
@@ -50,7 +49,6 @@ namespace NEAT
             foreach (Genome aGenome in agents)
             {
                 aGenome.ConnectionMutation(random, connInnov);
-                aGenome.GenSpecie = species[0];
             }
             SeclectSpecies();
         }
