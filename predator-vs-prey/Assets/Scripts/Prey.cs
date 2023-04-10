@@ -192,7 +192,7 @@ public class Prey : Agent
         const double C1 = 1.0;
         const double C2 = 1.0;
         const double C3 = 0.4;
-        const double DT = 5;
+        const double DT = 3;
 
         bool CreateNew = true;
         double dist = Genome.CompatibilityDistance(Genome, sp.mascot, C1, C2, C3);
