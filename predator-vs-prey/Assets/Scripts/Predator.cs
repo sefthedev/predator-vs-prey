@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NEAT;
+using System;
 
 public class Predator : Agent
 {
@@ -161,7 +162,7 @@ public class Predator : Agent
         const double C1 = 1.0;
         const double C2 = 1.0;
         const double C3 = 0.4;
-        const double DT = 3;
+        const double DT = 5f;
 
         bool CreateNew = true;
         double dist = Genome.CompatibilityDistance(Genome, sp.mascot, C1, C2, C3);

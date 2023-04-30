@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NEAT;
+using System;
 
 public class Prey : Agent
 {
@@ -42,7 +43,6 @@ public class Prey : Agent
             this.gameObject.SetActive(false);
             populationManager.UpdateAgentPopulation(gameObject, false, AGENTTYPE.PREY);
             this.removeSpecie();
-            Destroy(this.gameObject);
         }
         // STATS TRACKING
         timeSurvived += Time.deltaTime;
@@ -224,5 +224,4 @@ public class Prey : Agent
         if (this.Genome.Specie.memberCount == 0)
             populationManager.preySpecies--;
     }
-
 }

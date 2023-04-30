@@ -43,7 +43,7 @@ public class PopulationManager : MonoBehaviour
     //int bestPreyPoints = 0;
     //public Genome bestPreyGenome;
     //WEIGHTS FOR SPECIE
-
+    int durchlauf = 0;
 
 
 
@@ -136,12 +136,32 @@ public class PopulationManager : MonoBehaviour
             preyNodeCount -= go.GetComponent<Prey>().Genome.nodes.Count;
             preyGenCount -= go.GetComponent<Prey>().generation;
             preyPopulation.Remove(go);
+            Destroy(go);
         }
     }
    
 
     void Update()
     {
+        if (durchlauf >= preyPopulation.Count) {
+            durchlauf = 0;
+        }
+        if (!preyPopulation[durchlauf].activeSelf)
+        {
+            Debug.Log("Im inactive and i am inside PreyPopulation");
+            StartCoroutine(DoSomethingAfterTenSeconds(preyPopulation[durchlauf]));
+        }
+        durchlauf++;
+    }
+
+    IEnumerator DoSomethingAfterTenSeconds(GameObject go)
+    {
+        yield return new WaitForSeconds(10);
+        UpdateAgentPopulation(go, false, AGENTTYPE.PREY);
+        go.GetComponent<Prey>().removeSpecie();
+        if (preyPopulation.Contains(go)) {
+            Debug.Log("I still exist");
+        }
     }
 
     private void FixedUpdate()
