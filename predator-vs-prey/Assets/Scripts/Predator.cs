@@ -135,11 +135,11 @@ public class Predator : Agent
 
         // GENOME SETUP
         //go.GetComponent<Predator>().Genome = NEAT.Genome.copyGenome(this.Genome);
-        go.GetComponent<Predator>().Genome = Genome.Cross(this.Genome, this.Genome.Specie.mascot, random);
+        //go.GetComponent<Predator>().Genome = Genome.Cross(this.Genome, this.Genome.Specie.mascot, random);
         if (random.NextDouble() < MUTATION_RATE) go.GetComponent<Predator>().Genome.Mutation(random);
         if (random.NextDouble() < ADD_CONN_RATE) go.GetComponent<Predator>().Genome.ConnectionMutation(random, populationManager.predatorConnInnov);
         if (random.NextDouble() < ADD_NODE_RATE) go.GetComponent<Predator>().Genome.NodeMutation(random, populationManager.predatorNodeInnov, populationManager.predatorConnInnov);
-        go.GetComponent<Predator>().selectSpecie(this.Genome.Specie);
+        //go.GetComponent<Predator>().selectSpecie(this.Genome.Specie);
         populationManager.UpdateAgentPopulation(go, true, AGENTTYPE.PREDATOR);
     }
 
@@ -154,50 +154,50 @@ public class Predator : Agent
         Genome.AddNodeGene(new NodeGenes(NodeGenes.TYPE.OUTPUT, populationManager.predatorNodeInnov.GetInnovation()));
         Genome.ConnectionMutation(random, populationManager.predatorConnInnov);
         Genome.Mutation(random);
-        this.createNewSpecie();
+        //this.createNewSpecie();
     }
 
-    public override void selectSpecie(Specie sp)
-    {
-        const double C1 = 1.0;
-        const double C2 = 1.0;
-        const double C3 = 0.4;
-        const double DT = 5f;
+    //public override void selectSpecie(Specie sp)
+    //{
+    //    const double C1 = 1.0;
+    //    const double C2 = 1.0;
+    //    const double C3 = 0.4;
+    //    const double DT = 5f;
 
-        bool CreateNew = true;
-        double dist = Genome.CompatibilityDistance(Genome, sp.mascot, C1, C2, C3);
-        if (dist < DT)
-        {
-            this.Genome.Specie = sp;
-            this.Genome.Specie.addMember();
-            CreateNew = false;
-        }
-        //if (specie.size == 0 || specie.shouldBeRemoved)
-        //{
-        //    populationManager.predatorSpecies.Remove(specie);
-        //}
+    //    bool CreateNew = true;
+    //    double dist = Genome.CompatibilityDistance(Genome, sp.mascot, C1, C2, C3);
+    //    if (dist < DT)
+    //    {
+    //        this.Genome.Specie = sp;
+    //        this.Genome.Specie.addMember();
+    //        CreateNew = false;
+    //    }
+    //    //if (specie.size == 0 || specie.shouldBeRemoved)
+    //    //{
+    //    //    populationManager.predatorSpecies.Remove(specie);
+    //    //}
 
-        if (CreateNew == true)
-        {
-            this.createNewSpecie();
-        }
-    }
+    //    if (CreateNew == true)
+    //    {
+    //        this.createNewSpecie();
+    //    }
+    //}
 
-    protected override void createNewSpecie()
-    {
-        this.Genome.Specie = new Specie();
-        this.Genome.Specie.setMascot(this.Genome);
-        populationManager.predatorSpecies++;
-        this.Genome.Specie.addMember();
-    }
+    //protected override void createNewSpecie()
+    //{
+    //    this.Genome.Specie = new Specie();
+    //    this.Genome.Specie.setMascot(this.Genome);
+    //    populationManager.predatorSpecies++;
+    //    this.Genome.Specie.addMember();
+    //}
 
-    public override void removeSpecie()
-    {
+    //public override void removeSpecie()
+    //{
        
-        this.Genome.Specie.removeMember();
-        if (this.Genome.Specie.memberCount == 0)
-            populationManager.predatorSpecies--;
-    }
+    //    this.Genome.Specie.removeMember();
+    //    if (this.Genome.Specie.memberCount == 0)
+    //        populationManager.predatorSpecies--;
+    //}
 
     private void OnCollisionEnter2D(Collision2D collision)
     {

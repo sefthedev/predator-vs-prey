@@ -8,7 +8,7 @@ namespace NEAT
 {
     public class Genome : IComparable<Genome>
     {
-        public Specie Specie { get; set; } 
+        //public Specie Specie { get; set; } 
         const double PROBABILITY_PERTURBING = 0.9;
         public double score;
         public Dictionary<int, ConnectionGenes> connections { get; set; }
@@ -17,7 +17,7 @@ namespace NEAT
         int inputsNum = 0;
         int outputsNum = 0;
 
-        public Specie GenSpecie { get; set; }
+        //public Specie GenSpecie { get; set; }
         private double compute_at(NodeGenes a)
         {
             if (a.value != null) return (double)a.value;
@@ -406,25 +406,25 @@ namespace NEAT
             return (x >= y) ? (x * x + x + y) : (y * y + x);
         }
     }
-    public class Specie
-    {
-        public Genome mascot;
-        //public List<UnityEngine.GameObject> gos = new List<UnityEngine.GameObject>();
-        public int memberCount = 0;
-        public float bestScore = 0f;
+    //public class Specie
+    //{
+    //    public Genome mascot;
+    //    //public List<UnityEngine.GameObject> gos = new List<UnityEngine.GameObject>();
+    //    public int memberCount = 0;
+    //    public float bestScore = 0f;
 
-        public void setMascot(Genome _mascot) 
-        {
-            mascot = Genome.copyGenome(_mascot);
+    //    public void setMascot(Genome _mascot) 
+    //    {
+    //        mascot = Genome.copyGenome(_mascot);
 
-        }
-        public void addMember()
-        {
-            memberCount++;
-        }
-        public void removeMember()
-        {
-            memberCount--;
-        }
-    }
+    //    }
+    //    public void addMember()
+    //    {
+    //        memberCount++;
+    //    }
+    //    public void removeMember()
+    //    {
+    //        memberCount--;
+    //    }
+    //}
 }

@@ -36,8 +36,8 @@ public abstract class Agent : MonoBehaviour
     }
     protected abstract void CreateChild();
     public abstract void NeatSetup();
-    public  abstract void selectSpecie(Specie sp);
-    protected abstract void createNewSpecie();
-    public abstract void removeSpecie();
+    //public  abstract void selectSpecie(Specie sp);
+    //protected abstract void createNewSpecie();
+    //public abstract void removeSpecie();
 
 }
