@@ -40,9 +40,8 @@ public class Prey : Agent
     {
         if (removeObject)
         {
-            this.gameObject.SetActive(false);
             populationManager.UpdateAgentPopulation(gameObject, false, AGENTTYPE.PREY);
-            this.removeSpecie();
+            return;
         }
         // STATS TRACKING
         timeSurvived += Time.deltaTime;
@@ -147,9 +146,14 @@ public class Prey : Agent
 
     protected override void CreateChild()
     {
-        double MUTATION_RATE = 0.45;
-        double ADD_CONN_RATE = 0.25;
-        double ADD_NODE_RATE = 0.15;
+        //double MUTATION_RATE = 0.045 + 0.4 * Math.Pow(0.5, this.generation / 200);
+        //double ADD_CONN_RATE = 0.025 + 0.2 * Math.Pow(0.5, this.generation / 200);
+        //double ADD_NODE_RATE = 0.015 + 0.1 * Math.Pow(0.5, this.generation / 200);
+
+
+        double MUTATION_RATE = 0.1 + (0.1 - 0.1 * Math.Pow(Math.E, -0.005 * generation));
+        double ADD_CONN_RATE = 0.04 + 0.1 * Math.Pow(0.5, this.generation / 200);
+        double ADD_NODE_RATE = 0.02 + 0.1 * Math.Pow(0.5, this.generation / 200);
 
         GameObject go = Instantiate(gameObject);
         // RESETTING STATS
@@ -192,7 +196,7 @@ public class Prey : Agent
         const double C1 = 1.0;
         const double C2 = 1.0;
         const double C3 = 0.4;
-        const double DT = 3;
+        double DT = 5 + (this.generation / 1500f);
 
         bool CreateNew = true;
         double dist = Genome.CompatibilityDistance(Genome, sp.mascot, C1, C2, C3);

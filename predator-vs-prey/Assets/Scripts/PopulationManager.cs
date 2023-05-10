@@ -8,11 +8,11 @@ public enum AGENTTYPE { PREDATOR, PREY };
 
 public class PopulationManager : MonoBehaviour
 {
-    
+
     //SETTINGS
 
     System.Random random = new System.Random();
-    
+
     //PREFABS
     [SerializeField] GameObject predatorPrefab;
     [SerializeField] GameObject preyPrefab;
@@ -34,7 +34,7 @@ public class PopulationManager : MonoBehaviour
 
 
     //INNOVATION
-    public InnovationGen predatorNodeInnov = new InnovationGen ();
+    public InnovationGen predatorNodeInnov = new InnovationGen();
     public InnovationGen predatorConnInnov = new InnovationGen();
     public InnovationGen preyNodeInnov = new InnovationGen();
     public InnovationGen preyConnInnov = new InnovationGen();
@@ -135,40 +135,43 @@ public class PopulationManager : MonoBehaviour
             preyConnectionCount -= go.GetComponent<Prey>().Genome.connections.Count;
             preyNodeCount -= go.GetComponent<Prey>().Genome.nodes.Count;
             preyGenCount -= go.GetComponent<Prey>().generation;
+            go.GetComponent<Prey>().removeSpecie();
+            go.SetActive(false);
             preyPopulation.Remove(go);
             Destroy(go);
         }
     }
-   
 
-    void Update()
-    {
-        if (durchlauf >= preyPopulation.Count) {
-            durchlauf = 0;
-        }
-        if (!preyPopulation[durchlauf].activeSelf)
-        {
-            Debug.Log("Im inactive and i am inside PreyPopulation");
-            StartCoroutine(DoSomethingAfterTenSeconds(preyPopulation[durchlauf]));
-        }
-        durchlauf++;
-    }
 
-    IEnumerator DoSomethingAfterTenSeconds(GameObject go)
-    {
-        yield return new WaitForSeconds(10);
-        UpdateAgentPopulation(go, false, AGENTTYPE.PREY);
-        go.GetComponent<Prey>().removeSpecie();
-        if (preyPopulation.Contains(go)) {
-            Debug.Log("I still exist");
-        }
-    }
+    //void Update()
+    //{
+    //    if (durchlauf >= preyPopulation.Count)
+    //    {
+    //        durchlauf = 0;
+    //    }
+    //    if (!preyPopulation[durchlauf].activeSelf)
+    //    {
+    //        Debug.Log("Im inactive and i am inside PreyPopulation");
+    //        StartCoroutine(DoSomethingAfterTenSeconds(preyPopulation[durchlauf]));
+    //    }
+    //    durchlauf++;
+    //}
+
+    //IEnumerator DoSomethingAfterTenSeconds(GameObject go)
+    //{
+    //    yield return new WaitForSeconds(5);
+    //    if (preyPopulation.Contains(go))
+    //    {
+    //        UpdateAgentPopulation(go, false, AGENTTYPE.PREY);
+    //        Debug.Log("I still exist");
+    //    }
+    //}
 
     private void FixedUpdate()
     {
-        Debug.Log("||||||||||||  average  Pred/Prey connectionCount:     " + System.Math.Round((float)predatorConnectionCount/predatorPopulation.Count) + "/" + System.Math.Round((float)preyConnectionCount / preyPopulation.Count) +
-            "||||||||||||   average Pred/Prey nodeCount:     " + System.Math.Round((float)predatorNodeCount / predatorPopulation.Count)+ "/" + System.Math.Round((float)preyNodeCount / preyPopulation.Count) +
-            "||||||||||||   average Pred/Prey Generation:     " + System.Math.Round((float)predatorGenCount/predatorPopulation.Count) + "/" + System.Math.Round((float)preyGenCount/preyPopulation.Count)+
+        Debug.Log("||||||||||||  average  Pred/Prey connectionCount:     " + System.Math.Round((float)predatorConnectionCount / predatorPopulation.Count) + "/" + System.Math.Round((float)preyConnectionCount / preyPopulation.Count) +
+            "||||||||||||   average Pred/Prey nodeCount:     " + System.Math.Round((float)predatorNodeCount / predatorPopulation.Count) + "/" + System.Math.Round((float)preyNodeCount / preyPopulation.Count) +
+            "||||||||||||   average Pred/Prey Generation:     " + System.Math.Round((float)predatorGenCount / predatorPopulation.Count) + "/" + System.Math.Round((float)preyGenCount / preyPopulation.Count) +
             "||||||||||||   predatorPopulation:     " + this.predatorPopulation.Count + "||||||||||||   preyPopulation:     " + this.preyPopulation.Count +
             "||||||||||||   predatorSpeciesCount:     " + this.predatorSpecies + "||||||||||||   preySpeciesCount:     " + this.preySpecies);
     }
